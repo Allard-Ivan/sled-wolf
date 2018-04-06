@@ -21,8 +21,6 @@ export class SmartTableComponent {
 
   dateItems: string[] = [];
 
-  reports: Observable<any[]>;
-
   menu$: Observable<any>;
   
   number$: Observable<any>;
@@ -91,33 +89,45 @@ export class SmartTableComponent {
     //   "completion": "项目骨架完成。登录、注册接口合一。"
     // };
     // this.reportsHandler.add(foo);
-    this.reports = this.reportsHandler.get();
 
     // this.number$ = this.http.listHandler('/numbers').get({
     //   queryFn: (ref) =>  ref.orderByChild('name').equalTo('one'),
     //   isKey: true
     // });
-    this.reports.subscribe(data => {
+    this.reportsHandler.get().subscribe(data => {
       this.source.load(data);
-    })
-
+    });
   }
 
   onDeleteConfirm(event): void {
     if (window.confirm('Are you sure you want to delete?')) {
-      event.confirm.resolve();
+      console.log(event);
+      const report: WeekReport = event.data;
+      this.reportsHandler.drop(report.key)
+      .subscribe(
+        () => event.confirm.resolve()
+        , (error) => event.confirm.reject()
+      );
     } else {
       event.confirm.reject();
     }
   }
 
   onCreateConfirm(event): void {
-    console.log('Yeah, it\'s create');
-    event.confirm.resolve();
+    const report: WeekReport = event.newData;
+    this.reportsHandler.add(report)
+    .subscribe(
+      () => event.confirm.resolve()
+      , (error) => event.confirm.reject()
+    );
   }
   
   onEditConfirm(event): void {
-    console.log('Yeah, it\'s edit');
-    event.confirm.resolve();
+    const report: WeekReport = event.newData;
+    this.reportsHandler.update(report.key, report)
+    .subscribe(
+      () => event.confirm.resolve()
+      , (error) => event.confirm.reject()
+    );
   }
 }

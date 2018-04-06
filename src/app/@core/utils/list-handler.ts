@@ -37,7 +37,7 @@ export class ListHandler {
     set<T>(key, data: T) {
       return Observable.fromPromise(this._fireList.set(key, dbTimeObject(data, false)));
     }
-    drop() {
-      return Observable.fromPromise(this._fireList.remove());
+    drop(key: string) {
+      return Observable.fromPromise(this._fireList.remove(key));
     }
   }
