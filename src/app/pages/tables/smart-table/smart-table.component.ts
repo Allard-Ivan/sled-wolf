@@ -7,6 +7,7 @@ import { BaseHttpService } from '../../../@core/service/base-http.service';
 import { ListHandler } from './../../../@core/utils/list-handler';
 
 import { WeekReport } from './../../../shared/week-report/week-report';
+import { GlobalService } from './../../../shared/global.service';
 
 @Component({
   selector: 'ngx-smart-table',
@@ -26,6 +27,10 @@ export class SmartTableComponent {
   number$: Observable<any>;
 
   reportsHandler: ListHandler;
+
+  weekSelect: string = 'This Week';
+
+  currentWeek: number;
 
   settings = {
     add: {
@@ -75,26 +80,50 @@ export class SmartTableComponent {
 
   source: LocalDataSource = new LocalDataSource();
 
-  constructor(private service: SmartTableService, private http: BaseHttpService) {
+  constructor(
+    private service: SmartTableService,
+    private http: BaseHttpService,
+    private global: GlobalService
+  ) {
     // const data = this.service.getData();
-
-    this.dateItems = ['2018-3-1', '2018-2-1'];
+    // const foo: Date = new Date();
+    // foo.getDate() * foo.getMonth() * 
+    this.dateItems = this.global.getWeeks();
+    this.currentWeek = this.global.getWeek();
     this.reportsHandler = this.http.listHandler('reports');
-    // let foo = {
-    //   "dayOfWeek": "Monday",
-    //   "workContent": "搭建 app 后台服务框架",
-    //   "workType": "编码/单元测试",
-    //   "complexiy": "中",
-    //   "workingHours":2,
-    //   "completion": "项目骨架完成。登录、注册接口合一。"
-    // };
-    // this.reportsHandler.add(foo);
+    /*let foo = {
+      "dayOfWeek": "Monday",
+      "workContent": "搭建 app 后台服务框架",
+      "workType": "编码/单元测试",
+      "complexiy": "中",
+      "workingHours":2,
+      "completion": "项目骨架完成。登录、注册接口合一。"
+    };
+    this.reportsHandler.add(foo);
+    this.number$ = this.http.listHandler('/numbers').get({
+      queryFn: (ref) =>  ref.orderByChild('name').equalTo('one'),
+      isKey: true
+    });*/
+    this.reportsHandler.get({
+      queryFn: (ref) =>  ref.orderByChild('weekIndex').equalTo(this.currentWeek),
+      isKey: true
+    }).subscribe(data => {
+      this.source.load(data);
+    });
+  }
 
-    // this.number$ = this.http.listHandler('/numbers').get({
-    //   queryFn: (ref) =>  ref.orderByChild('name').equalTo('one'),
-    //   isKey: true
-    // });
-    this.reportsHandler.get().subscribe(data => {
+  foo(weekSelect) {
+    this.weekSelect = weekSelect;
+    let selectWeek: number;
+    if (weekSelect === 'This Week') {
+      selectWeek = this.currentWeek;
+    } else {
+      selectWeek = parseInt(weekSelect.split('-')[1]);
+    }
+    this.reportsHandler.get({
+      queryFn: (ref) =>  ref.orderByChild('weekIndex').equalTo(selectWeek),
+      isKey: true
+    }).subscribe(data => {
       this.source.load(data);
     });
   }
@@ -115,6 +144,7 @@ export class SmartTableComponent {
 
   onCreateConfirm(event): void {
     const report: WeekReport = event.newData;
+    report.weekIndex = this.currentWeek;
     this.reportsHandler.add(report)
     .subscribe(
       () => event.confirm.resolve()

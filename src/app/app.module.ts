@@ -23,6 +23,8 @@ import { AppRoutingModule } from './app-routing.module';
 import { ThemeModule } from './@theme/theme.module';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
+import { GlobalService } from './shared/global.service';
+
 @NgModule({
   declarations: [AppComponent],
   imports: [
@@ -44,6 +46,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
   bootstrap: [AppComponent],
   providers: [
     { provide: APP_BASE_HREF, useValue: '/' },
+    GlobalService
   ],
 })
 export class AppModule {

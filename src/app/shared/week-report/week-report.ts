@@ -6,6 +6,7 @@ export class WeekReport {
         public workType: string,
         public complexiy: string,
         public workingHours: number,
-        public completion: string
+        public completion: string,
+        public weekIndex: number
     ) { }
 }

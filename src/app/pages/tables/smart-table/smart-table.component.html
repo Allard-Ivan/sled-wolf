@@ -13,10 +13,10 @@
         </pre> -->
         <div class="dropdown ghost-dropdown" ngbDropdown>
             <button class="btn btn-primary" type="button" ngbDropdownToggle>
-              This Week
+              {{weekSelect}}
             </button>
             <ul class="dropdown-menu" ngbDropdownMenu>
-              <li class="dropdown-item" *ngFor="let item of dateItems" >{{item}}</li>
+              <li class="dropdown-item" *ngFor="let item of dateItems" (click)="foo(item)">{{item}}</li>
             </ul>
           </div>
     </div>
