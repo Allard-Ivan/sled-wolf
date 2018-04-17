@@ -7,6 +7,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/png" href="favicon.png">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <!-- 关于使用file_link不能播放的问题，是因为百度使用Http中的Referer头字段来防止盗链
+    ，在HTML文件中加上 <meta name="referrer" content="never">这一句让发送出去的Http包都不含Referer字段就行了 -->
+  <meta name="referrer" content="never">
 </head>
 <body>
   <ngx-app>Loading...</ngx-app>
