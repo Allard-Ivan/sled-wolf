@@ -3,6 +3,7 @@ import { PlayerService, Track } from '../../../@core/data/player.service';
 import { NbSearchService } from "@nebular/theme/components/search/search.service";
 import { DomSanitizer, SafeStyle } from '@angular/platform-browser';
 import { Http } from '@angular/http';
+import { NbThemeService } from '@nebular/theme';
 
 @Component({
   selector: 'ngx-player',
@@ -24,6 +25,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
   constructor(private playerService: PlayerService,
               private searchService: NbSearchService,
               private sanitization:DomSanitizer,
+              private themeService: NbThemeService, 
               private http: Http) {
     this.track = this.playerService.random();
     this.createPlayer();
@@ -31,7 +33,14 @@ export class PlayerComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    window.onkeydown = event => {
+      if (9 === event.keyCode) {
+        this.searchService.activateSearch('rotate-layout');
+      }
+    }
+
     this.searchService.onSearchSubmit().subscribe(data => {
+      this.themeService.changeTheme('cosmic');
       const musicUri = 'https://api.imjad.cn/cloudmusic/?';
       let url: string = musicUri + 'type=search&s=' + data.term;
       this.http.get(url).map(res => res.json())
