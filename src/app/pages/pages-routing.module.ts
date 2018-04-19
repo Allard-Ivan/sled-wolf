@@ -12,8 +12,11 @@ const routes: Routes = [{
       path: 'dashboard',
       component: DashboardComponent,
     }, {
-      path: 'tables',
-      loadChildren: './tables/tables.module#TablesModule',
+      path: 'work-report',
+      loadChildren: './work-report/work-report.module#WorkReportModule',
+    }, {
+      path: 'multimedia',
+      loadChildren: './multimedia/multimedia.module#MultimediaModule',
     }, {
       path: '',
       redirectTo: 'dashboard',

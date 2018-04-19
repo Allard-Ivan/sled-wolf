@@ -3,8 +3,6 @@ import { HttpModule } from "@angular//http";
 
 import { ThemeModule } from '../../@theme/theme.module';
 import { DashboardComponent } from './dashboard.component';
-import { PlayerComponent } from "./player/player.component";
-
 
 @NgModule({
   imports: [
@@ -13,7 +11,6 @@ import { PlayerComponent } from "./player/player.component";
   ],
   declarations: [
     DashboardComponent,
-    PlayerComponent
   ],
 })
 export class DashboardModule { }

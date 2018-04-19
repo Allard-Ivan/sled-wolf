@@ -8,12 +8,26 @@ export const MENU_ITEMS: NbMenuItem[] = [
     home: true,
   },
   {
-    title: 'Week Report',
+    title: 'Work Report',
     icon: 'nb-tables',
     children: [
       {
         title: 'Main Work',
-        link: '/pages/tables/smart-table',
+        link: '/pages/work-report/main-work',
+      },
+    ],
+  },
+  {
+    title: 'Multimedia',
+    icon: 'nb-tables',
+    children: [
+      {
+        title: 'Audio Station',
+        link: '/pages/multimedia/audio-station/default',
+      },
+      {
+        title: 'Video Station',
+        link: '/pages/multimedia/video-station/default',
       },
     ],
   },

@@ -1,9 +1,17 @@
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 
 import { Constants } from './constants';
 
 @Injectable()
 export class GlobalService {
+
+    constructor(private router: Router) {
+    }
+
+    advancedSearch(termPrefix, termSuffix) {
+        this.router.navigateByUrl('/multimedia/' + termPrefix + '/' + termSuffix);
+    }
 
     getWeek(): number {
         const now: Date = new Date();
