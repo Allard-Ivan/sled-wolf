@@ -23,11 +23,11 @@ export const MENU_ITEMS: NbMenuItem[] = [
     children: [
       {
         title: 'Audio Station',
-        link: '/pages/multimedia/audio-station/default',
+        link: '/pages/multimedia/audio-station/梦乡',
       },
       {
         title: 'Video Station',
-        link: '/pages/multimedia/video-station/default',
+        link: '/pages/multimedia/video-station/The Shawshank Redemption',
       },
     ],
   },

@@ -6,6 +6,7 @@ import {
 } from '@angular/platform-browser';
 
 export class Track {
+  id: string;
   name: string;
   artist: string;
   url: string;
@@ -17,12 +18,14 @@ export class PlayerService {
   current: number;
   playlist: Track[] = [
     {
+      id: "-1",
       name: 'Don\'t Wanna Fight',
       artist: 'Alabama Shakes',
       url: 'https://p.scdn.co/mp3-preview/6156cdbca425a894972c02fca9d76c0b70e001af',
       cover: 'assets/images/cover1.jpg',
     },
     {
+      id: "-1",
       name: 'Harder',
       artist: 'Daft Punk',
       url: 'https://p.scdn.co/mp3-preview/92a04c7c0e96bf93a1b1b1cae7dfff1921969a7b',

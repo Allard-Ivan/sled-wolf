@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Params, Router, NavigationEnd, NavigationError } from '@angular/router';
-
-import { GlobalService } from './../../../shared/global.service';
+import { ActivatedRoute, Params } from '@angular/router';
 
 @Component({
   selector: 'audio-station',
@@ -17,9 +15,7 @@ export class AudioStationComponent implements OnInit {
   searchTxt: string;
 
   constructor(
-    private global: GlobalService,
     private routeInfo: ActivatedRoute,
-    private router: Router,
   ) {
   }
 

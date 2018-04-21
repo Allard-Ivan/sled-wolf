@@ -5,6 +5,7 @@ import { NbMenuService, NbSidebarService } from '@nebular/theme';
 import { UserService } from '../../../@core/data/users.service';
 import { AnalyticsService } from '../../../@core/utils/analytics.service';
 import { NbSearchService } from "@nebular/theme/components/search/search.service";
+import { NbThemeService } from '@nebular/theme';
 
 @Component({
   selector: 'ngx-header',
@@ -24,6 +25,7 @@ export class HeaderComponent implements OnInit {
 
   constructor(private sidebarService: NbSidebarService,
               private menuService: NbMenuService,
+              private themeService: NbThemeService,
               private searchService: NbSearchService,
               private userService: UserService,
               private router: Router,
@@ -47,11 +49,7 @@ export class HeaderComponent implements OnInit {
       const term = data.term;
       const termAt = term.split('@');
       if (this.flag) {
-        if (termAt.length === 2) {
-          termArray.push(this.flag, termAt[1]);
-        } else {
-          termArray.push(this.flag, term);
-        }
+        termArray.push(this.flag, term);
       } else {
         if (termAt.length === 2) {
           termArray.push(termAt[0], termAt[1]);
@@ -83,16 +81,12 @@ export class HeaderComponent implements OnInit {
   }
 
     /**
-   * 问题：从别的路由回来又重新监听了一次
    * 路由 URL 监听
-   * 路由结束时查看 URL 后缀是 real, 还是 history
    */
   routerNavigationEndListen() {
     this.router.events
       .filter(event => event instanceof NavigationEnd)
       .subscribe((event: NavigationEnd) => {
-        // this.realHistory = event.url.split('/')[2];
-        console.log(event.url);
         const url = event.url;
         const flagArr = [ 'audio', 'video' ];
         let isInclude: boolean = false;
@@ -100,6 +94,7 @@ export class HeaderComponent implements OnInit {
           if (url.includes(flag)) {
             this.flag = flag;
             isInclude = true;
+            this.themeService.changeTheme('cosmic');
           }
         });
         if (!isInclude) {

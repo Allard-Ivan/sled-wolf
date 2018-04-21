@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
-
-import { GlobalService } from './../../../shared/global.service';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Http } from '@angular/http';
+import { ActivatedRoute, Params } from '@angular/router';
 
 @Component({
   selector: 'video-station',
@@ -11,10 +11,34 @@ import { GlobalService } from './../../../shared/global.service';
     }
   `],
 })
-export class VideoStationComponent {
+export class VideoStationComponent implements OnInit {
 
-  constructor(
-    private global: GlobalService
-  ) {
+  @ViewChild('youkuplayer')
+  youkuplayer: ElementRef;
+
+  constructor(private http: Http,
+              private routeInfo: ActivatedRoute,) {
   }
+
+  ngOnInit() {
+    this.routeInfo.params.subscribe((params: Params) => {
+      const searchTxt = params['search'];
+      let url = 'https://www.soku.com/search_video/q_' + searchTxt + '?f=1&kb=040200000000000__q_'
+                 + searchTxt + '&spm=a2hww.20027244.';
+      this.http.get(url)
+      .map(res => res.text())
+      .subscribe(data => {
+        let bar = data.match(/_log_vid=".*"/);
+        let vidTotal = bar[0];
+        let vid = vidTotal.slice(vidTotal.indexOf("\"") + 1, vidTotal.lastIndexOf("\""));
+        let player = new YKU.Player('youkuplayer', this.youkuplayer.nativeElement, {
+          styleid: '0',
+          client_id: 'd61f1e601a312087',
+          vid: vid,
+          newPlayer: true
+        });
+      });
+    });
+  }
+
 }

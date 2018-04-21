@@ -2,7 +2,11 @@ import { Component, HostBinding, Input, OnInit, OnChanges, OnDestroy } from '@an
 import { PlayerService, Track } from '../../../@core/data/player.service';
 import { DomSanitizer, SafeStyle } from '@angular/platform-browser';
 import { Http } from '@angular/http';
-import { NbThemeService } from '@nebular/theme';
+
+export enum SearchType {
+  Single,
+  SongList
+}
 
 @Component({
   selector: 'ngx-player',
@@ -26,7 +30,6 @@ export class PlayerComponent implements OnInit, OnChanges, OnDestroy {
 
   constructor(private playerService: PlayerService,
               private sanitization:DomSanitizer,
-              private themeService: NbThemeService, 
               private http: Http) {
     this.track = this.playerService.random();
     this.createPlayer();
@@ -34,55 +37,64 @@ export class PlayerComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnInit() {
-    // window.onkeydown = event => {
-    //   if (32 === event.keyCode) {
-    //     this.playPause();
-    //   }
-    // }
-    this.themeService.changeTheme('cosmic');
+    window.onkeypress = event => {
+      if (32 === event.keyCode) {
+        this.playPause();
+      }
+    }
   }
 
   ngOnChanges() {
-    const musicUri = 'https://api.imjad.cn/cloudmusic/?';
+    const musicUri = 'http://120.78.84.240:3000';
     let url: string = '';
     const searchArr = this.search.split(':');
     if (searchArr.length === 2) {
-      url = musicUri + 'type=search&search_type=1000&s=' + searchArr[1];
+      url = musicUri + '/search?type=1000&keywords=' + searchArr[1];
       this.http.get(url).map(res => res.json())
         .subscribe(songlist => {
-          const arr = songlist.result[0].playlists;
-          const tracks: Track[] = [];
-          arr.foreach(elem => {
-            const track: Track = new Track();
-            const trackId = elem.id;
-            track.name = elem.name;
-            track.artist = elem.creator.nickname;
-            track.cover = this.sanitization.bypassSecurityTrustStyle(`url(${elem.coverImgUrl})`);
-            url = musicUri + 'type=song&id=' + trackId;
-            this.http.get(url).map(res => res.json())
-              .subscribe(dataSong => {
-                track.url = dataSong.data[0].url;
-                if (track) {
-                  this.playerService.playlist.push(track);
-                }
-            });
+          const playlist = songlist.result.playlists[0];
+          url = musicUri + '/playlist/detail?id=' + playlist.id;
+          const trackArr: Track[] = [];
+          this.http.get(url).map(res => res.json())
+            .subscribe(list => {
+              const tracks = list.result.tracks;
+              this.playerService.playlist = [];
+              let trackIds = '';
+              tracks.forEach(song => {
+                const track = this.trackProduction(song, SearchType.SongList);
+                trackArr.push(track);
+                trackIds += track.id + ',';
+              });
+              trackIds = trackIds.substring(0, trackIds.length - 1);
+              url = musicUri + '/music/url?id=' + trackIds;
+              this.http.get(url).map(res => res.json())
+                .subscribe(trackList => {
+                  console.log(trackList);
+                  const trackListData = trackList.data;
+                  for (let i = 0; i < trackListData.length; i++) {
+                    trackArr[i].url = trackListData[i].url;
+                  }
+                });
+              setTimeout(() => {
+                this.playerService.current = 0;
+                this.playerService.playlist = trackArr;
+                this.track = trackArr[0];
+                this.reload();
+              }, 400);
           });
-          this.playerService.playlist = tracks;
-          this.playerService.current = 0;
-          this.track = tracks[0];
-          this.reload();
         })
     } else {
-      url = musicUri + 'type=search&s=' + this.search;
+      url = musicUri + '/search?keywords=' + this.search;
       this.http.get(url).map(res => res.json())
         .subscribe(data => {
           const song = data.result.songs[0];
-          let track: Track = new Track();
-          const trackId = song.id;
-          track.name = song.name;
-          track.artist = song.ar[0].name;
-          track.cover = this.sanitization.bypassSecurityTrustStyle(`url(${song.al.picUrl})`);
-          url = musicUri + 'type=song&id=' + trackId;
+          const track = this.trackProduction(song, SearchType.Single);
+          url = musicUri + '/song/detail?ids=' + track.id;
+          this.http.get(url).map(res => res.json())
+          .subscribe(songDetails => {
+            track.cover = this.sanitization.bypassSecurityTrustStyle(`url(${songDetails.songs[0].al.picUrl})`);
+          });
+          url = musicUri + '/music/url?id=' + track.id;
           this.http.get(url).map(res => res.json())
             .subscribe(dataSong => {
               track.url = dataSong.data[0].url;
@@ -95,6 +107,22 @@ export class PlayerComponent implements OnInit, OnChanges, OnDestroy {
             });
       });
     }
+  }
+
+
+  trackProduction(song, type: SearchType): Track {
+    const track = new Track();
+    track.id = song.id;
+    track.name = song.name;
+    track.artist = song.artists[0].name;
+    switch(type) {
+      case SearchType.Single:
+        break;
+      case SearchType.SongList:
+        track.cover = this.sanitization.bypassSecurityTrustStyle(`url(${song.album.picUrl})`);
+        break;
+    }
+    return track;
   }
 
   ngOnDestroy() {
