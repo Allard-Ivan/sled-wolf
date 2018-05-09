@@ -16,7 +16,7 @@
               {{weekSelect}}
             </button>
             <ul class="dropdown-menu" ngbDropdownMenu>
-              <li class="dropdown-item" *ngFor="let item of dateItems" (click)="foo(item)">{{item}}</li>
+              <li class="dropdown-item" *ngFor="let item of dateItems" (click)="weekSelectionChanged(item)">{{item}}</li>
             </ul>
           </div>
     </div>

@@ -39,7 +39,7 @@ export class HeaderComponent implements OnInit {
       .subscribe((users: any) => this.user = users.allard);
 
     window.onkeydown = event => {
-      if (9 === event.keyCode) {
+      if (120 === event.keyCode) {
         this.searchService.activateSearch('rotate-layout');
       }
     };

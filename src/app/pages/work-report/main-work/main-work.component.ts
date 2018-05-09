@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { LocalDataSource } from 'ng2-smart-table';
 import { Observable } from 'rxjs/Observable';
+import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 
 import { SmartTableService } from '../../../@core/data/smart-table.service';
 import { BaseHttpService } from '../../../@core/service/base-http.service';
@@ -8,6 +9,7 @@ import { ListHandler } from './../../../@core/utils/list-handler';
 
 import { WeekReport } from './../../../shared/week-report/week-report';
 import { GlobalService } from './../../../shared/global.service';
+import { ModalComponent } from './../../../shared/modal/modal.component';
 
 @Component({
   selector: 'main-work',
@@ -23,13 +25,12 @@ export class MainWorkComponent {
   dateItems: string[] = [];
 
   menu$: Observable<any>;
-  
   number$: Observable<any>;
 
   reportsHandler: ListHandler;
 
   weekSelect: string = 'This Week';
-
+  weekIndex: number;
   currentWeek: number;
 
   settings = {
@@ -83,13 +84,15 @@ export class MainWorkComponent {
   constructor(
     private service: SmartTableService,
     private http: BaseHttpService,
-    private global: GlobalService
+    private global: GlobalService,
+    private modalService: NgbModal
   ) {
     // const data = this.service.getData();
     // const foo: Date = new Date();
     // foo.getDate() * foo.getMonth() * 
     this.dateItems = this.global.getWeeks();
     this.currentWeek = this.global.getWeek();
+    this.weekIndex = this.currentWeek;
     this.reportsHandler = this.http.listHandler('reports');
     /*let foo = {
       "dayOfWeek": "Monday",
@@ -112,16 +115,11 @@ export class MainWorkComponent {
     });
   }
 
-  foo(weekSelect) {
+  weekSelectionChanged(weekSelect) {
     this.weekSelect = weekSelect;
-    let selectWeek: number;
-    if (weekSelect === 'This Week') {
-      selectWeek = this.currentWeek;
-    } else {
-      selectWeek = parseInt(weekSelect.split('-')[1]);
-    }
+    this.weekIndex = weekSelect === 'This Week' ? this.currentWeek : parseInt(weekSelect.split('-')[1]);
     this.reportsHandler.get({
-      queryFn: (ref) =>  ref.orderByChild('weekIndex').equalTo(selectWeek),
+      queryFn: (ref) =>  ref.orderByChild('weekIndex').equalTo(this.weekIndex),
       isKey: true
     }).subscribe(data => {
       this.source.load(data);
@@ -129,22 +127,27 @@ export class MainWorkComponent {
   }
 
   onDeleteConfirm(event): void {
-    if (window.confirm('Are you sure you want to delete?')) {
-      console.log(event);
+    const activeModal = this.modalService.open(ModalComponent, {
+      size: 'sm',
+      container: 'nb-layout',
+    });
+
+    activeModal.componentInstance.modalHeader = 'Report Delete';
+    activeModal.componentInstance.modalContent = `Do you really want to delete it?`;
+    activeModal.componentInstance.determine = () => {
       const report: WeekReport = event.data;
       this.reportsHandler.drop(report.key)
       .subscribe(
         () => event.confirm.resolve()
         , (error) => event.confirm.reject()
       );
-    } else {
-      event.confirm.reject();
-    }
+      activeModal.close();
+    };
   }
 
   onCreateConfirm(event): void {
     const report: WeekReport = event.newData;
-    report.weekIndex = this.currentWeek;
+    report.weekIndex = this.weekIndex;
     this.reportsHandler.add(report)
     .subscribe(
       () => event.confirm.resolve()
