@@ -4,6 +4,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { MultimediaComponent } from './multimedia.component';
 import { AudioStationComponent } from './audio-station/audio-station.component';
 import { VideoStationComponent } from './video-station/video-station.component';
+import { ImageStationComponent } from './image-station/image-station.component';
 
 const routes: Routes = [{
   path: '',
@@ -14,6 +15,9 @@ const routes: Routes = [{
   },{
     path: 'video-station/:search',
     component: VideoStationComponent,
+  },{
+    path: 'image-station/:search',
+    component: ImageStationComponent,
   }],
 }];
 
@@ -27,4 +31,5 @@ export const routedComponents = [
   MultimediaComponent,
   AudioStationComponent,
   VideoStationComponent,
+  ImageStationComponent
 ];

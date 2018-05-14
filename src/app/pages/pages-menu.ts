@@ -9,7 +9,7 @@ export const MENU_ITEMS: NbMenuItem[] = [
   },
   {
     title: 'Work Report',
-    icon: 'nb-tables',
+    icon: 'nb-compose',
     children: [
       {
         title: 'Main Work',
@@ -19,7 +19,7 @@ export const MENU_ITEMS: NbMenuItem[] = [
   },
   {
     title: 'Multimedia',
-    icon: 'nb-tables',
+    icon: 'nb-paper-plane',
     children: [
       {
         title: 'Audio Station',
@@ -28,6 +28,10 @@ export const MENU_ITEMS: NbMenuItem[] = [
       {
         title: 'Video Station',
         link: '/pages/multimedia/video-station/The Shawshank Redemption',
+      },
+      {
+        title: 'Image Station',
+        link: '/pages/multimedia/image-station/Null',
       },
     ],
   },

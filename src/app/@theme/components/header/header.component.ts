@@ -88,7 +88,7 @@ export class HeaderComponent implements OnInit {
       .filter(event => event instanceof NavigationEnd)
       .subscribe((event: NavigationEnd) => {
         const url = event.url;
-        const flagArr = [ 'audio', 'video' ];
+        const flagArr = [ 'audio', 'video', 'image' ];
         let isInclude: boolean = false;
         flagArr.forEach(flag => {
           if (url.includes(flag)) {
