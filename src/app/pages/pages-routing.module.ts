@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 
 import { PagesComponent } from './pages.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { AuthGuard } from '../shared/guards/auth.guard';
 
 const routes: Routes = [{
   path: '',
@@ -14,6 +15,7 @@ const routes: Routes = [{
     }, {
       path: 'work-report',
       loadChildren: './work-report/work-report.module#WorkReportModule',
+      canActivate: [AuthGuard]
     }, {
       path: 'multimedia',
       loadChildren: './multimedia/multimedia.module#MultimediaModule',

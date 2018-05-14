@@ -22,6 +22,7 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { ThemeModule } from './@theme/theme.module';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NbEmailPassAuthProvider, NbAuthModule } from '@nebular/auth';
 
 import { GlobalService } from './shared/global.service';
 
@@ -32,6 +33,14 @@ import { GlobalService } from './shared/global.service';
     BrowserAnimationsModule,
     HttpClientModule,
     AppRoutingModule,
+    NbAuthModule.forRoot({
+      providers: {
+        email: {
+          service: NbEmailPassAuthProvider,
+        },
+      },
+      forms: {},
+    }), 
 
     AngularFireModule.initializeApp(firebaseConfig),
     AngularFireAuthModule,

@@ -22,14 +22,6 @@ export class ImageStationComponent implements OnInit {
 
   ngOnInit() {
 		const imageData = [
-			{
-				srcUrl: 'https://www.planwallpaper.com/static/images/3865967-wallpaper-full-hd_XNgM7er.jpg',
-				previewUrl: 'https://www.planwallpaper.com/static/images/3865967-wallpaper-full-hd_XNgM7er.jpg'
-      },
-      {
-				srcUrl: 'https://images7.alphacoders.com/700/thumb-1920-700047.jpg',
-				previewUrl: 'https://images7.alphacoders.com/700/thumb-1920-700047.jpg'
-			},
       {
 				srcUrl: 'http://yodobi.com/4k-Wallpapers/4k-wallpapers-phone-Is-4K-Wallpaper.jpg',
 				previewUrl: 'http://yodobi.com/4k-Wallpapers/4k-wallpapers-phone-Is-4K-Wallpaper.jpg'
@@ -40,6 +32,14 @@ export class ImageStationComponent implements OnInit {
 			}
 			// ... more items
 		];
+		const imagePrefix = 'assets/images/cook/';
+		for (let i = 1; i < 12; i++)
+		{
+			let imageUrl = imagePrefix + 'cook' + i + '.jpg';
+			let data = {srcUrl: imageUrl, previewUrl: imageUrl};
+			imageData.push(data);
+		}
+		
 		this.routeInfo.params.subscribe((params: Params) => {
 			this.searchTxt = params['search'];
 			this.items = imageData.map(item => new ImageItem(item.srcUrl, item.previewUrl));
