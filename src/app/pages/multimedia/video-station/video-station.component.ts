@@ -23,14 +23,13 @@ export class VideoStationComponent implements OnInit {
   ngOnInit() {
     this.routeInfo.params.subscribe((params: Params) => {
       const searchTxt = params['search'];
-      let url = 'https://www.soku.com/search_video/q_' + searchTxt + '?f=1&kb=040200000000000__q_'
-                 + searchTxt + '&spm=a2hww.20027244.';
+      let url = 'https://www.soku.com/search_video/q_' + searchTxt;
       this.http.get(url)
       .map(res => res.text())
       .subscribe(data => {
-        let bar = data.match(/_log_vid=".*"/);
+        let bar = data.match(/id_.*?\./);
         let vidTotal = bar[0];
-        let vid = vidTotal.slice(vidTotal.indexOf("\"") + 1, vidTotal.lastIndexOf("\""));
+        let vid = vidTotal.slice(vidTotal.indexOf('_') + 1, vidTotal.lastIndexOf('.'));
         let player = new YKU.Player('youkuplayer', this.youkuplayer.nativeElement, {
           styleid: '0',
           client_id: 'd61f1e601a312087',
